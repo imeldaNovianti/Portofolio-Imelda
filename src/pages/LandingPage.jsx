@@ -6,55 +6,12 @@ import {
   FaPaintBrush, FaCode, FaServer, FaMobileAlt, FaInstagram,
   FaWhatsapp, FaPaperPlane, FaHeart, FaUser, FaGraduationCap,
   FaLaptopCode, FaJava, FaCss3Alt, FaHtml5, FaGitAlt,
-  FaMapMarkerAlt, FaDownload
+  FaMapMarkerAlt, FaDownload, FaAward, FaCertificate
 } from "react-icons/fa";
-import { SiJavascript, SiSpringboot, SiPostgresql, SiPostman, SiC } from "react-icons/si";
+import { SiJavascript, SiSpringboot, SiPostgresql, SiPostman, SiC, SiTailwindcss } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
-import Typical from "react-typical";
 
 // Komponen-komponen khusus
-const InteractiveCursor = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isPointer, setIsPointer] = useState(false);
-  
-  useEffect(() => {
-    const moveCursor = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      
-      // Deteksi elemen yang bisa diinteraksi
-      const target = e.target;
-      setIsPointer(
-        window.getComputedStyle(target).cursor === "pointer" ||
-        target.tagName === "BUTTON" ||
-        target.tagName === "A" ||
-        target.closest("button") ||
-        target.closest("a")
-      );
-    };
-    
-    window.addEventListener("mousemove", moveCursor);
-    return () => window.removeEventListener("mousemove", moveCursor);
-  }, []);
-  
-  return (
-    <motion.div
-      className={`fixed top-0 left-0 z-50 pointer-events-none hidden md:block ${
-        isPointer ? "mix-blend-difference" : "mix-blend-normal"
-      }`}
-      animate={{ x: position.x - 12, y: position.y - 12 }}
-      transition={{ type: "spring", damping: 10, stiffness: 150 }}
-    >
-      <div className={`w-6 h-6 rounded-full ${
-        isPointer ? "bg-white scale-150" : "bg-pink-200 scale-100"
-      } transition-all duration-150 flex items-center justify-center`}>
-        {isPointer && (
-          <div className="w-1 h-1 bg-black rounded-full"></div>
-        )}
-      </div>
-    </motion.div>
-  );
-};
-
 const ScrollIndicator = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
   
@@ -101,9 +58,12 @@ const FloatingSocials = () => {
           target="_blank"
           rel="noopener noreferrer"
           className={`p-3 bg-white dark:bg-gray-800 rounded-full shadow-lg text-gray-600 dark:text-gray-400 ${social.color} transition-all duration-300`}
-          whileHover={{ y: -5 }}
+          whileHover={{ y: -5, scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           aria-label={social.label}
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: index * 0.1 + 1.5 }}
         >
           {social.icon}
         </motion.a>
@@ -153,6 +113,113 @@ const StarsBackground = () => {
   );
 };
 
+// Komponen Teks Berjalan (Marquee)
+const ScrollingText = () => {
+  return (
+    <div className="w-full bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-200 py-2 overflow-hidden">
+      <motion.div 
+        className="whitespace-nowrap flex"
+        animate={{ x: ['100%', '-100%'] }}
+        transition={{ 
+          x: {
+            repeat: Infinity,
+            repeatType: "loop",
+            duration: 20,
+            ease: "linear"
+          }
+        }}
+      >
+        <span className="mx-4">✨ Selamat Datang di Portfolio Imelda Novianty ✨</span>
+        <span className="mx-4">✨ Fullstack Developer & UI/UX Designer ✨</span>
+        <span className="mx-4">✨ Terbuka untuk Peluang Kerja dan Kolaborasi ✨</span>
+      </motion.div>
+    </div>
+  );
+};
+
+// Komponen Kursor Kustom
+const CustomCursor = () => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [hidden, setHidden] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const [linkHover, setLinkHover] = useState(false);
+
+  useEffect(() => {
+    const addEventListeners = () => {
+      document.addEventListener("mousemove", onMouseMove);
+      document.addEventListener("mouseenter", onMouseEnter);
+      document.addEventListener("mouseleave", onMouseLeave);
+      document.addEventListener("mousedown", onMouseDown);
+      document.addEventListener("mouseup", onMouseUp);
+    };
+
+    const removeEventListeners = () => {
+      document.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("mouseenter", onMouseEnter);
+      document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mousedown", onMouseDown);
+      document.removeEventListener("mouseup", onMouseUp);
+    };
+
+    const onMouseMove = (e) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+    };
+
+    const onMouseDown = () => {
+      setClicked(true);
+    };
+
+    const onMouseUp = () => {
+      setClicked(false);
+    };
+
+    const onMouseLeave = () => {
+      setHidden(true);
+    };
+
+    const onMouseEnter = () => {
+      setHidden(false);
+    };
+
+    // Menambahkan efek hover pada link dan button
+    const handleLinkHoverEvents = () => {
+      const links = document.querySelectorAll('a, button, [role="button"]');
+      
+      links.forEach(link => {
+        link.addEventListener('mouseover', () => setLinkHover(true));
+        link.addEventListener('mouseout', () => setLinkHover(false));
+      });
+    };
+
+    addEventListeners();
+    handleLinkHoverEvents();
+    return () => removeEventListeners();
+  }, []);
+
+  return (
+    <motion.div
+      className={`cursor hidden md:block fixed top-0 left-0 z-50 pointer-events-none transition-opacity duration-300 ${
+        hidden ? 'opacity-0' : 'opacity-100'
+      }`}
+      animate={{
+        x: position.x - 10,
+        y: position.y - 10,
+      }}
+      transition={{ type: "spring", mass: 0.1 }}
+    >
+      <motion.div
+        className={`w-4 h-4 rounded-full ${
+          clicked ? 'bg-pink-700' : linkHover ? 'bg-pink-500' : 'bg-pink-400'
+        }`}
+        animate={{
+          scale: clicked ? 0.8 : linkHover ? 1.5 : 1,
+        }}
+        transition={{ type: "spring", stiffness: 500, damping: 28 }}
+      />
+    </motion.div>
+  );
+};
+
 function LandingPage() {
   const [navOpen, setNavOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
@@ -182,7 +249,7 @@ function LandingPage() {
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY + 120;
-      const sections = ["about", "skills", "projects", "contact"];
+      const sections = ["about", "skills", "projects", "education", "contact"];
       let current = "home";
 
       for (const section of sections) {
@@ -198,36 +265,38 @@ function LandingPage() {
   }, []);
 
   const navLinks = [
-    { href: "#about", label: "About", icon: <FaUser className="inline mr-2" /> },
-    { href: "#skills", label: "Skills", icon: <FaCode className="inline mr-2" /> },
-    { href: "#projects", label: "Projects", icon: <FaLaptopCode className="inline mr-2" /> },
-    { href: "#contact", label: "Contact", icon: <FaPaperPlane className="inline mr-2" /> },
+    { href: "#about", label: "Tentang", icon: <FaUser className="inline mr-2" /> },
+    { href: "#education", label: "Pendidikan", icon: <FaGraduationCap className="inline mr-2" /> },
+    { href: "#skills", label: "Keahlian", icon: <FaCode className="inline mr-2" /> },
+    { href: "#projects", label: "Proyek", icon: <FaLaptopCode className="inline mr-2" /> },
+    { href: "#contact", label: "Kontak", icon: <FaPaperPlane className="inline mr-2" /> },
   ];
 
   const skillsData = [
-    { name: "Java", icon: FaJava },
-    { name: "JavaScript", icon: SiJavascript },
-    { name: "HTML", icon: FaHtml5 },
-    { name: "CSS", icon: FaCss3Alt },
-    { name: "ReactJS", icon: FaReact },
-    { name: "Node.js", icon: FaNodeJs },
-    { name: "Spring Boot", icon: SiSpringboot },
-    { name: "SQL & Database", icon: FaDatabase },
-    { name: "PostgreSQL", icon: SiPostgresql },
-    { name: "Postman", icon: SiPostman },
-    { name: "DBeaver", icon: FaDatabase },
-    { name: "UI/UX Design", icon: FaPaintBrush },
-    { name: "Git", icon: FaGitAlt },
-    { name: "Bahasa C", icon: SiC },
+    { name: "Java", icon: FaJava, level: 85 },
+    { name: "JavaScript", icon: SiJavascript, level: 80 },
+    { name: "HTML", icon: FaHtml5, level: 90 },
+    { name: "CSS", icon: FaCss3Alt, level: 85 },
+    { name: "ReactJS", icon: FaReact, level: 75 },
+    { name: "Node.js", icon: FaNodeJs, level: 70 },
+    { name: "Spring Boot", icon: SiSpringboot, level: 75 },
+    { name: "SQL & Database", icon: FaDatabase, level: 80 },
+    { name: "PostgreSQL", icon: SiPostgresql, level: 75 },
+    { name: "Postman", icon: SiPostman, level: 85 },
+    { name: "DBeaver", icon: FaDatabase, level: 80 },
+    { name: "UI/UX Design", icon: FaPaintBrush, level: 70 },
+    { name: "Git", icon: FaGitAlt, level: 80 },
+    { name: "Tailwind CSS", icon: SiTailwindcss, level: 85 },
+    { name: "Bahasa C", icon: SiC, level: 75 },
   ];
 
   const projectsData = [
     {
       id: 1,
       title: "Aplikasi Manajemen Tugas",
-      category: "Java Desktop Application",
+      category: "Aplikasi Desktop Java",
       image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      description: "Aplikasi desktop untuk manajemen tugas dengan fitur reminder, kategori, dan prioritas.",
+      description: "Aplikasi desktop untuk manajemen tugas dengan fitur reminder, kategori, dan prioritas. Dibangun dengan JavaFX dan SQLite untuk penyimpanan data lokal.",
       technologies: ["Java", "JavaFX", "SQLite", "CSS"],
       githubUrl: "https://github.com/imeldaNovianti/Uas-lanjutan-imell.git",
       liveUrl: "#"
@@ -235,19 +304,19 @@ function LandingPage() {
     {
       id: 2,
       title: "Sistem Penerimaan Pegawai Baru",
-      category: "Full-Stack Web Application",
+      category: "Aplikasi Web Full-Stack",
       image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      description: "Sistem untuk mengelola proses penerimaan pegawai baru dengan fitur aplikasi online, seleksi administrasi, dan penilaian.",
+      description: "Sistem untuk mengelola proses penerimaan pegawai baru dengan fitur aplikasi online, seleksi administrasi, dan penilaian. Menerapkan Spring Boot di backend dan ReactJS di frontend.",
       technologies: ["Java", "Spring Boot", "ReactJS", "PostgreSQL"],
       githubUrl: "https://github.com/iqnefo1310/WEB-PENERIMAAN-PEGAWAI-BARU.git",
       liveUrl: "#"
     },
     {
       id: 3,
-      title: "Good Teacher Platform",
-      category: "Web Development",
+      title: "Platform Good Teacher",
+      category: "Pengembangan Web",
       image: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      description: "Platform untuk menghubungkan guru dan siswa dengan fitur pencarian, rating, dan sistem booking.",
+      description: "Platform untuk menghubungkan guru dan siswa dengan fitur pencarian, rating, dan sistem booking. Menggunakan PHP native dan MySQL dengan antarmuka responsif.",
       technologies: ["HTML", "CSS", "JavaScript", "PHP", "MySQL"],
       githubUrl: "https://github.com/imeldaNovianti/GOOD-TEACHER-.git",
       liveUrl: "#"
@@ -255,111 +324,204 @@ function LandingPage() {
     {
       id: 4,
       title: "Website Lowongan Kerja",
-      category: "Frontend Development",
+      category: "Pengembangan Frontend",
       image: "https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
-      description: "Website untuk mempromosikan lowongan kerja dengan filter pencarian dan aplikasi online.",
+      description: "Website untuk mempromosikan lowongan kerja dengan filter pencarian dan aplikasi online. Menggunakan ReactJS dengan JSON Server untuk simulasi API.",
       technologies: ["ReactJS", "CSS", "JavaScript", "JSON Server"],
       githubUrl: "https://github.com/imeldaNovianti/web_loker.git",
+      liveUrl: "#"
+    },
+    {
+      id: 5,
+      title: "Sistem Tata Surya 3D",
+      category: "Web 3D Interactive",
+      image: "https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      description: "Simulasi interaktif 3D dari sistem tata surya kita dengan pergerakan planet yang realistis dan informasi detail tentang setiap planet. Dibangun dengan Three.js.",
+      technologies: ["JavaScript", "Three.js", "HTML", "CSS"],
+      githubUrl: "https://github.com/imeldaNovianti/solar-system-3d.git",
       liveUrl: "#"
     }
   ];
 
+  const educationData = [
+    {
+      degree: "S1 Management Informatika",
+      institution: "Universitas Nasional Pasim",
+      period: "2019 - 2023",
+      description: "Lulus dengan IPK 3.75. Fokus pada pengembangan perangkat lunak, basis data, dan manajemen proyek TI. Aktif dalam organisasi mahasiswa dan kegiatan kampus.",
+      achievements: [
+        "Lulus dengan predikat Cum Laude",
+        "Ketua Himpunan Mahasiswa Informatika (2021-2022)",
+        "Peserta aktif dalam berbagai kompetisi coding"
+      ]
+    },
+    {
+      degree: "SMA Negeri 4 Bandung",
+      institution: "SMA Negeri 4 Bandung",
+      period: "2016 - 2019",
+      description: "Jurusan IPA dengan fokus pada mata pelajaran matematika dan fisika. Aktif dalam ekstrakurikuler jurnalistik dan robotika.",
+      achievements: [
+        "Juara 2 Lomba Cerdas Cermat Tingkat Kota",
+        "Anggota tim robotika sekolah"
+      ]
+    }
+  ];
+
+  const certificationsData = [
+    {
+      title: "Belajar Dasar Pemrograman JavaScript",
+      issuer: "Dicoding Indonesia",
+      date: "Juni 2023",
+      credentialLink: "#"
+    },
+    {
+      title: "Belajar Membuat Aplikasi Back-End untuk Pemula",
+      issuer: "Dicoding Indonesia",
+      date: "Agustus 2023",
+      credentialLink: "#"
+    },
+    {
+      title: "Java Programming Masterclass",
+      issuer: "Udemy",
+      date: "November 2022",
+      credentialLink: "#"
+    },
+    {
+      title: "React JS Frontend Web Development For Beginners",
+      issuer: "Udemy",
+      date: "Januari 2023",
+      credentialLink: "#"
+    }
+  ];
+
   return (
-    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50 text-gray-800'} font-['Poppins'] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-300`}>
-      <InteractiveCursor />
+    <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-pink-50 via-pink-50 to-pink-100 text-gray-800'} font-['Poppins'] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-300`}>
       <ScrollIndicator />
       <FloatingSocials />
       <StarsBackground />
+      <CustomCursor />
+      
+      {/* Header dengan Teks Berjalan */}
+      <ScrollingText />
       
       {/* Header */}
-      <header className={`fixed top-0 w-full ${darkMode ? 'bg-gray-900' : 'bg-white'} bg-opacity-90 backdrop-blur-md z-50 shadow-lg border-b ${darkMode ? 'border-gray-800' : 'border-gray-200'} transition-colors duration-300`}>
+      <header className={`fixed top-8 w-full ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} bg-opacity-90 backdrop-blur-md z-50 shadow-lg border-b ${darkMode ? 'border-gray-800' : 'border-pink-200'} transition-colors duration-300`}>
         <nav className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2 text-pink-500 select-none">
+          <motion.div 
+            className="flex items-center gap-2 text-pink-500 select-none"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             <div className="w-3 h-3 rounded-full bg-pink-500 animate-pulse"></div>
             <h1 className="text-xl font-bold tracking-widest uppercase">PORTFOLIO IMELDA</h1>
-          </div>
+          </motion.div>
           
           {/* Desktop Nav */}
           <ul className="hidden md:flex gap-8 text-lg font-medium">
             {navLinks.map(({ href, label, icon }) => (
-              <li key={label}>
+              <motion.li 
+                key={label}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
                 <a
                   href={href}
                   className={`transition-all duration-300 ${
                     activeSection === href.substring(1) 
                       ? "text-pink-500 font-bold border-b-2 border-pink-500" 
-                      : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'}`
+                      : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'}`
                   }`}
                   onClick={() => setNavOpen(false)}
                 >
                   {icon} {label}
                 </a>
-              </li>
+              </motion.li>
             ))}
-            <li>
+            <motion.li
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               <button
                 onClick={() => setDarkMode(!darkMode)}
                 aria-label="Toggle dark mode"
-                className={`${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition text-xl`}
+                className={`${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition text-xl`}
               >
                 {darkMode ? <FaSun /> : <FaMoon />}
               </button>
-            </li>
+            </motion.li>
           </ul>
           
           {/* Mobile Nav Toggle */}
-          <button
-            className={`md:hidden ${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition text-2xl`}
+          <motion.button
+            className={`md:hidden ${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition text-2xl`}
             aria-label="Toggle menu"
             onClick={() => setNavOpen(!navOpen)}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
           >
             {navOpen ? <FaTimes /> : <FaBars />}
-          </button>
+          </motion.button>
         </nav>
         
         {/* Mobile Nav */}
-        {navOpen && (
-          <motion.ul
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`md:hidden ${darkMode ? 'bg-gray-800' : 'bg-white'} px-6 py-4 space-y-4 text-lg font-medium transition-colors duration-300`}
-          >
-            {navLinks.map(({ href, label, icon }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  className={`block transition ${
-                    activeSection === href.substring(1) 
-                      ? "text-pink-500 font-bold" 
-                      : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'}`
-                  }`}
-                  onClick={() => setNavOpen(false)}
+        <AnimatePresence>
+          {navOpen && (
+            <motion.ul
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className={`md:hidden ${darkMode ? 'bg-gray-800' : 'bg-pink-50'} px-6 py-4 space-y-4 text-lg font-medium transition-colors duration-300 overflow-hidden`}
+            >
+              {navLinks.map(({ href, label, icon }) => (
+                <motion.li 
+                  key={label}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {icon} {label}
-                </a>
-              </li>
-            ))}
-            <li>
-              <button
-                onClick={() => {
-                  setDarkMode(!darkMode);
-                  setNavOpen(false);
-                }}
-                aria-label="Toggle dark mode"
-                className={`${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-gray-600 hover:text-pink-500'} transition text-xl flex items-center gap-2`}
+                  <a
+                    href={href}
+                    className={`block transition ${
+                      activeSection === href.substring(1) 
+                        ? "text-pink-500 font-bold" 
+                        : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'}`
+                    }`}
+                    onClick={() => setNavOpen(false)}
+                  >
+                    {icon} {label}
+                  </a>
+                </motion.li>
+              ))}
+              <motion.li
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
               >
-                {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
-            </li>
-          </motion.ul>
-        )}
+                <button
+                  onClick={() => {
+                    setDarkMode(!darkMode);
+                    setNavOpen(false);
+                  }}
+                  aria-label="Toggle dark mode"
+                  className={`${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition text-xl flex items-center gap-2`}
+                >
+                  {darkMode ? <FaSun /> : <FaMoon />} {darkMode ? "Mode Terang" : "Mode Gelap"}
+                </button>
+              </motion.li>
+            </motion.ul>
+          )}
+        </AnimatePresence>
       </header>
 
-      <main className="pt-20">
+      <main className="pt-32">
         {/* Hero Section */}
         <section className="min-h-screen flex flex-col justify-center relative overflow-hidden">
           <div className="absolute inset-0 z-0">
-            <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900' : 'bg-gradient-to-br from-blue-100 via-pink-100 to-purple-100'} opacity-90 transition-colors duration-300`}></div>
+            <div className={`absolute inset-0 ${darkMode ? 'bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900' : 'bg-gradient-to-br from-pink-100 via-pink-100 to-pink-200'} opacity-90 transition-colors duration-300`}></div>
           </div>
           
           <motion.div 
@@ -374,8 +536,16 @@ function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              Hi, I'm <span className="text-pink-500">Imelda Novianty</span>
-              <br />Fullstack Developer
+              Hai, Saya <span className="text-pink-500">Imelda Novianty</span>
+              <br />
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
+              >
+                Fullstack Developer
+              </motion.span>
             </motion.h1>
             
             <motion.p 
@@ -384,19 +554,9 @@ function LandingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4, duration: 0.8 }}
             >
-              <span className={`${darkMode ? "text-gray-300" : "text-gray-600"} font-medium`}>
-                <Typical
-                  steps={[
-                    "Fresh Graduate in Management Informatics.",
-                    2000,
-                    "Passionate about creating beautiful and functional applications.",
-                    2000,
-                    "Skilled in both frontend and backend development.",
-                    2000,
-                  ]}
-                  loop={Infinity}
-                  wrapper="span"
-                />
+              <span className={`${darkMode ? "text-gray-300" : "text-pink-800"} font-medium`}>
+                Lulusan Baru Management Informatika yang bersemangat dalam menciptakan aplikasi yang indah dan fungsional. 
+                Terampil dalam pengembangan frontend dan backend dengan dasar yang kuat dalam Java, JavaScript, dan teknologi web modern.
               </span>
             </motion.p>
             
@@ -408,19 +568,20 @@ function LandingPage() {
             >
               <motion.a
                 href="#projects"
-                className="px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-lg"
-                whileHover={{ y: -5 }}
+                className="px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-lg flex items-center justify-center gap-2"
+                whileHover={{ y: -5, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                View My Projects
+                <FaLaptopCode /> Lihat Proyek Saya
               </motion.a>
               <motion.a
-                href="#contact"
-                className={`px-8 py-4 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-white hover:bg-gray-100 text-gray-800'} rounded-lg font-medium transition-colors border ${darkMode ? 'border-gray-700' : 'border-gray-300'}`}
-                whileHover={{ y: -5 }}
+                href="/resume.pdf"
+                download
+                className={`px-8 py-4 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-white hover:bg-pink-100 text-pink-800'} rounded-lg font-medium transition-colors border ${darkMode ? 'border-gray-700' : 'border-pink-300'} flex items-center justify-center gap-2`}
+                whileHover={{ y: -5, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                Get In Touch
+                <FaDownload /> Unduh CV
               </motion.a>
             </motion.div>
             
@@ -430,7 +591,7 @@ function LandingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5, duration: 1 }}
             >
-              <a href="#about" className={`${darkMode ? 'text-gray-600 hover:text-pink-500' : 'text-gray-400 hover:text-pink-500'} transition-colors animate-bounce`}>
+              <a href="#about" className={`${darkMode ? 'text-gray-600 hover:text-pink-500' : 'text-pink-400 hover:text-pink-500'} transition-colors animate-bounce`}>
                 <FaChevronDown size={24} />
               </a>
             </motion.div>
@@ -438,21 +599,21 @@ function LandingPage() {
         </section>
 
         {/* About Section */}
-        <section id="about" className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
+        <section id="about" className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} transition-colors duration-300`}>
           <div className="max-w-6xl mx-auto px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'} font-['Montserrat']`}>
-                <FaUser className="inline mr-3 text-pink-500" /> About Me
+              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-pink-800'} font-['Montserrat']`}>
+                <FaUser className="inline mr-3 text-pink-500" /> Tentang Saya
               </h2>
               <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
-              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} max-w-2xl mx-auto text-lg`}>
-                Get to know more about my background, education, and interests
+              <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
+                Kenali lebih jauh tentang latar belakang, pendidikan, dan minat saya
               </p>
             </motion.div>
             
@@ -460,12 +621,16 @@ function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
                 className="flex justify-center"
               >
                 <div className="relative max-w-xs">
-                  <div className="absolute -inset-3 border-2 border-pink-500 rounded-xl transform rotate-3"></div>
+                  <motion.div 
+                    className="absolute -inset-3 border-2 border-pink-500 rounded-xl transform rotate-3"
+                    whileHover={{ rotate: 6, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  ></motion.div>
                   <img
                     src="/src/assets/me.jpg"
                     alt="Imelda Novianty"
@@ -480,326 +645,678 @@ function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="space-y-6"
               >
                 <h3 className="text-2xl font-bold text-pink-500 font-['Montserrat']">Imelda Novianty</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex flex-col">
+                  <motion.div 
+                    className="flex flex-col p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md"
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="flex items-center gap-2 mb-2">
                       <FaGraduationCap className="text-pink-500" />
-                      <span className="font-semibold">Education:</span>
+                      <span className="font-semibold">Pendidikan:</span>
                     </div>
-                    <p className={darkMode ? "text-gray-300" : "text-gray-600"}>Management Informatics - Universitas Nasional Pasim</p>
-                  </div>
+                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>Management Informatika - Universitas Nasional Pasim</p>
+                  </motion.div>
                   
-                  <div className="flex flex-col">
+                  <motion.div 
+                    className="flex flex-col p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md"
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="flex items-center gap-2 mb-2">
                       <FaLaptopCode className="text-pink-500" />
-                      <span className="font-semibold">Role:</span>
+                      <span className="font-semibold">Peran:</span>
                     </div>
-                    <p className={darkMode ? "text-gray-300" : "text-gray-600"}>Fullstack Developer</p>
-                  </div>
+                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>Fullstack Developer</p>
+                  </motion.div>
                   
-                  <div className="flex flex-col">
+                  <motion.div 
+                    className="flex flex-col p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md"
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="flex items-center gap-2 mb-2">
                       <FaMapMarkerAlt className="text-pink-500" />
-                      <span className="font-semibold">Location:</span>
+                      <span className="font-semibold">Lokasi:</span>
                     </div>
-                    <p className={darkMode ? "text-gray-300" : "text-gray-600"}>Bandung, Jawa Barat</p>
-                  </div>
+                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>Bandung, Jawa Barat</p>
+                  </motion.div>
                   
-                  <div className="flex flex-col">
+                  <motion.div 
+                    className="flex flex-col p-4 rounded-lg bg-white dark:bg-gray-800 shadow-md"
+                    whileHover={{ y: -5, scale: 1.02 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
                     <div className="flex items-center gap-2 mb-2">
                       <FaHeart className="text-pink-500" />
-                      <span className="font-semibold">Interests:</span>
+                      <span className="font-semibold">Minat:</span>
                     </div>
-                    <p className={darkMode ? "text-gray-300" : "text-gray-600"}>
-                      Web Development, UI/UX Design, Database Management
+                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>
+                      Web Development, UI/UX Design, Manajemen Database
                     </p>
-                  </div>
+                  </motion.div>
                 </div>
                 
-                <p className={`${darkMode ? "text-gray-300" : "text-gray-600"} leading-relaxed text-lg`}>
-                  As a fresh graduate in Management Informatics, I'm passionate about creating digital solutions 
-                  that combine functionality with beautiful design. I enjoy both frontend and backend development, 
-                  and I'm constantly learning new technologies to improve my skills. I'm excited to start my 
-                  professional journey in the tech industry and contribute to meaningful projects.
-                </p>
+                <motion.p 
+                  className={`${darkMode ? "text-gray-300" : "text-pink-700"} text-lg`}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  Saya adalah lulusan Management Informatika dengan IPK 3.75 yang memiliki passion dalam pengembangan perangkat lunak. 
+                  Saya memiliki pengalaman dalam mengembangkan aplikasi web dan desktop menggunakan berbagai teknologi seperti Java, 
+                  JavaScript, ReactJS, dan Spring Boot. Saya senang menciptakan solusi yang inovatif dan efisien untuk masalah yang kompleks.
+                </motion.p>
+                
+                <motion.div 
+                  className="flex gap-4"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, delay: 0.6 }}
+                >
+                  <a
+                    href="#contact"
+                    className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-md"
+                  >
+                    Hubungi Saya
+                  </a>
+                  <a
+                    href="#projects"
+                    className={`px-6 py-3 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-white hover:bg-pink-100 text-pink-800'} rounded-lg font-medium transition-colors border ${darkMode ? 'border-gray-700' : 'border-pink-300'} shadow-md`}
+                  >
+                    Lihat Proyek
+                  </a>
+                </motion.div>
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* Education Section */}
+        <section id="education" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
+          <div className="max-w-6xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-pink-800'} font-['Montserrat']`}>
+                <FaGraduationCap className="inline mr-3 text-pink-500" /> Pendidikan & Sertifikasi
+              </h2>
+              <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
+              <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
+                Riwayat pendidikan formal dan sertifikasi yang telah saya selesaikan
+              </p>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-2 gap-12">
+              {/* Education Timeline */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-2xl font-bold text-pink-500 mb-8 font-['Montserrat']">Pendidikan Formal</h3>
+                
+                <div className="space-y-8">
+                  {educationData.map((edu, index) => (
+                    <motion.div 
+                      key={index}
+                      className={`relative pl-10 pb-8 ${index !== educationData.length - 1 ? 'border-l-2 border-pink-500' : ''}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, delay: index * 0.1 }}
+                    >
+                      <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-pink-500"></div>
+                      
+                      <div className={`p-6 rounded-xl ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} shadow-md`}>
+                        <h4 className="text-xl font-bold mb-2">{edu.degree}</h4>
+                        <p className={`font-semibold mb-2 ${darkMode ? 'text-pink-400' : 'text-pink-600'}`}>{edu.institution}</p>
+                        <p className={`mb-3 ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>{edu.period}</p>
+                        <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-pink-800'}`}>{edu.description}</p>
+                        
+                        <div className="mt-4">
+                          <h5 className="font-semibold mb-2 flex items-center gap-2">
+                            <FaAward className="text-pink-500" /> Prestasi & Pencapaian
+                          </h5>
+                          <ul className={`space-y-2 ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>
+                            {edu.achievements.map((achievement, i) => (
+                              <li key={i} className="flex items-start gap-2">
+                                <span className="text-pink-500 mt-1">•</span>
+                                <span>{achievement}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+              
+              {/* Certifications */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <h3 className="text-2xl font-bold text-pink-500 mb-8 font-['Montserrat']">Sertifikasi</h3>
+                
+                <div className="space-y-6">
+                  {certificationsData.map((cert, index) => (
+                    <motion.div 
+                      key={index}
+                      className={`p-6 rounded-xl ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} shadow-md flex items-start gap-4`}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.8, delay: index * 0.1 }}
+                      whileHover={{ y: -5 }}
+                    >
+                      <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
+                        <FaCertificate className="text-pink-500 text-xl" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold mb-1">{cert.title}</h4>
+                        <p className={`mb-1 ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>{cert.issuer}</p>
+                        <p className={`mb-2 ${darkMode ? 'text-gray-500' : 'text-pink-600'} text-sm`}>{cert.date}</p>
+                        <a 
+                          href={cert.credentialLink} 
+                          className="text-pink-500 hover:text-pink-600 text-sm font-medium flex items-center gap-1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Lihat Sertifikat <FaExternalLinkAlt className="text-xs" />
+                        </a>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                
+                <motion.div 
+                  className={`mt-8 p-6 rounded-xl ${darkMode ? 'bg-gray-700' : 'bg-pink-100'} shadow-md`}
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
+                >
+                  <h4 className="text-xl font-bold mb-4 text-pink-500">Keterampilan Tambahan</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
+                      <p className="font-semibold">Bahasa Inggris</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Menengah</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
+                      <p className="font-semibold">Manajemen Proyek</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Dasar</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
+                      <p className="font-semibold">Komunikasi</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Baik</p>
+                    </div>
+                    <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
+                      <p className="font-semibold">Kerja Tim</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Baik</p>
+                    </div>
+                  </div>
+                </motion.div>
               </motion.div>
             </div>
           </div>
         </section>
 
         {/* Skills Section */}
-        <section id="skills" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
+        <section id="skills" className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} transition-colors duration-300`}>
           <div className="max-w-6xl mx-auto px-6">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
               className="text-center mb-16"
             >
-              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'} font-['Montserrat']`}>
-                <FaCode className="inline mr-3 text-pink-500" /> Skills & Technologies
+              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-pink-800'} font-['Montserrat']`}>
+                <FaCode className="inline mr-3 text-pink-500" /> Keahlian Teknis
               </h2>
-              <div className="w-20 h-1 bg-pink-500 mx-auto"></div>
-            </motion.div>
-            
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 max-w-5xl mx-auto">
-              {skillsData.map((skill, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  className={`p-4 rounded-xl shadow-md flex flex-col items-center ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300 cursor-default`}
-                  whileHover={{ y: -5, scale: 1.05 }}
-                >
-                  <skill.icon className="text-pink-500 text-3xl mb-2" />
-                  <span className={`font-medium text-center ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>{skill.name}</span>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Projects Section */}
-        <section id="projects" className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}>
-          <div className="max-w-6xl mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'} font-['Montserrat']`}>
-                <FaLaptopCode className="inline mr-3 text-pink-500" /> My Projects
-              </h2>
-              <div className="w-20 h-1 bg-pink-500 mx-auto"></div>
-              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} mt-4 max-w-2xl mx-auto`}>
-                Here are some of the projects I've worked on as a student and fresh graduate.
+              <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
+              <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
+                Teknologi dan tools yang saya kuasai untuk pengembangan perangkat lunak
               </p>
             </motion.div>
             
-            <div className="grid md:grid-cols-2 gap-8">
-              {projectsData.map((project, index) => (
-                <motion.div
-                  key={project.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8, delay: index * 0.2 }}
-                  className={`rounded-xl overflow-hidden shadow-2xl ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300 cursor-default`}
-                  whileHover={{ y: -10 }}
-                >
-                  <div className="h-48 overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>{project.title}</h3>
-                    <p className="text-pink-500 mb-4">{project.category}</p>
-                    <p className={`mb-6 ${darkMode ? 'text-gray-300' : 'text-gray-600'}`}>{project.description}</p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.technologies.map((tech, techIndex) => (
-                        <span key={techIndex} className="px-3 py-1 bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-300 rounded-full text-sm">
-                          {tech}
-                        </span>
-                      ))}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              {skillsData.map((skill, index) => {
+                const IconComponent = skill.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    className={`p-6 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-md text-center group cursor-default`}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-100px" }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    whileHover={{ y: -5, scale: 1.05 }}
+                  >
+                    <div className="flex justify-center mb-4">
+                      <IconComponent className={`text-4xl ${darkMode ? 'text-pink-400' : 'text-pink-600'} group-hover:text-pink-500 transition-colors`} />
                     </div>
-                    
-                    <div className="flex gap-4">
-                      <motion.a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors text-sm"
-                        whileHover={{ y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <FaGithub /> View Code
-                      </motion.a>
-                      <motion.a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-pink-600 hover:bg-pink-700 text-white rounded-lg transition-colors text-sm"
-                        whileHover={{ y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <FaExternalLinkAlt /> Live Demo
-                      </motion.a>
+                    <h3 className="font-semibold mb-2">{skill.name}</h3>
+                    <div className={`w-full h-2 ${darkMode ? 'bg-gray-700' : 'bg-pink-100'} rounded-full overflow-hidden`}>
+                      <motion.div 
+                        className="h-full bg-gradient-to-r from-pink-500 to-purple-600 rounded-full"
+                        initial={{ width: 0 }}
+                        whileInView={{ width: `${skill.level}%` }}
+                        viewport={{ once: true, margin: "-100px" }}
+                        transition={{ duration: 1, delay: index * 0.1 }}
+                      />
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                    <span className="text-xs mt-1 block">{skill.level}%</span>
+                  </motion.div>
+                );
+              })}
             </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
-          <div className="max-w-4xl mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-16"
-            >
-              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'} font-['Montserrat']`}>
-                <FaPaperPlane className="inline mr-3 text-pink-500" /> Get In Touch
-              </h2>
-              <div className="w-20 h-1 bg-pink-500 mx-auto"></div>
-              <p className={`${darkMode ? 'text-gray-400' : 'text-gray-600'} mt-4 max-w-2xl mx-auto`}>
-                I'm always open to discussing new opportunities and interesting projects.
-              </p>
-            </motion.div>
             
-            <motion.div
+            <motion.div 
+              className={`mt-16 p-8 rounded-xl ${darkMode ? 'bg-gray-800' : 'bg-white'} shadow-md`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className={`rounded-2xl p-8 shadow-2xl ${darkMode ? 'bg-gray-900' : 'bg-gray-50'} transition-colors duration-300`}
             >
-              <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 className={`text-2xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Contact Information</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-                        <FaEnvelope className="text-pink-500 text-xl" />
-                      </div>
-                      <div>
-                        <p className={darkMode ? "text-gray-400" : "text-gray-500"}>Email</p>
-                        <a href="mailto:noviantyimelda@gmail.com" className={`${darkMode ? 'text-white hover:text-pink-400' : 'text-gray-800 hover:text-pink-500'} transition-colors`}>
-                          noviantyimelda@gmail.com
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-                        <FaWhatsapp className="text-pink-500 text-xl" />
-                      </div>
-                      <div>
-                        <p className={darkMode ? "text-gray-400" : "text-gray-500"}>WhatsApp</p>
-                        <a href="https://wa.me/6285223284793" className={`${darkMode ? 'text-white hover:text-pink-400' : 'text-gray-800 hover:text-pink-500'} transition-colors`}>
-                          +62 852-2328-4793
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-                        <FaLinkedin className="text-pink-500 text-xl" />
-                      </div>
-                      <div>
-                        <p className={darkMode ? "text-gray-400" : "text-gray-500"}>LinkedIn</p>
-                        <a href="https://www.linkedin.com/in/imelda-novianty-6b5606308/" className={`${darkMode ? 'text-white hover:text-pink-400' : 'text-gray-800 hover:text-pink-500'} transition-colors`}>
-                          imelda-novianty
-                        </a>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-pink-100 dark:bg-pink-900 flex items-center justify-center">
-                        <FaGithub className="text-pink-500 text-xl" />
-                      </div>
-                      <div>
-                        <p className={darkMode ? "text-gray-400" : "text-gray-500"}>GitHub</p>
-                        <a href="https://github.com/imeldaNovianti" className={`${darkMode ? 'text-white hover:text-pink-400' : 'text-gray-800 hover:text-pink-500'} transition-colors`}>
-                          imeldaNovianti
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+              <h3 className="text-2xl font-bold text-pink-500 mb-6 text-center font-['Montserrat']">Pengalaman Pengembangan</h3>
+              
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} text-center`}>
+                  <div className="text-4xl text-pink-500 mb-4">🚀</div>
+                  <h4 className="font-semibold mb-2">Pengembangan Frontend</h4>
+                  <p className={darkMode ? "text-gray-300" : "text-pink-700"}>
+                    Membangun antarmuka pengguna yang responsif dan interaktif dengan ReactJS, HTML, CSS, dan JavaScript.
+                  </p>
                 </div>
                 
-                <div>
-                  <form
-                    className="space-y-6"
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      alert("Thank you for your message! I'll get back to you soon.");
-                    }}
-                  >
-                    <div>
-                      <label htmlFor="name" className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Name
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        required
-                        className={`w-full px-4 py-3 ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors duration-300`}
-                        placeholder="Your name"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="email" className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        required
-                        className={`w-full px-4 py-3 ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors duration-300`}
-                        placeholder="Your email address"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="message" className={`block mb-2 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Message
-                      </label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        required
-                        rows={4}
-                        className={`w-full px-4 py-3 ${darkMode ? 'bg-gray-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-gray-800'} border rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none transition-colors duration-300`}
-                        placeholder="How can I help you?"
-                      />
-                    </div>
-                    
-                    <motion.button
-                      type="submit"
-                      className="w-full py-4 bg-pink-600 hover:bg-pink-700 text-white font-medium rounded-lg transition-colors shadow-lg flex items-center justify-center gap-2"
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <FaPaperPlane /> Send Message
-                    </motion.button>
-                  </form>
+                <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} text-center`}>
+                  <div className="text-4xl text-pink-500 mb-4">⚙️</div>
+                  <h4 className="font-semibold mb-2">Pengembangan Backend</h4>
+                  <p className={darkMode ? "text-gray-300" : "text-pink-700"}>
+                    Mengembangkan API dan logika bisnis menggunakan Java, Spring Boot, Node.js, dan database SQL.
+                  </p>
+                </div>
+                
+                <div className={`p-6 rounded-lg ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} text-center`}>
+                  <div className="text-4xl text-pink-500 mb-4">🎨</div>
+                  <h4 className="font-semibold mb-2">UI/UX Design</h4>
+                  <p className={darkMode ? "text-gray-300" : "text-pink-700"}>
+                    Merancang pengalaman pengguna yang intuitif dan antarmuka yang menarik dengan prinsip desain modern.
+                  </p>
                 </div>
               </div>
             </motion.div>
           </div>
         </section>
+
+        {/* Projects Section */}
+        <section id="projects" className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'} transition-colors duration-300`}>
+          <div className="max-w-6xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-pink-800'} font-['Montserrat']`}>
+                <FaLaptopCode className="inline mr-3 text-pink-500" /> Proyek Terbaru
+              </h2>
+              <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
+              <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
+                Beberapa proyek yang telah saya kembangkan selama belajar dan berkarier
+              </p>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {projectsData.map((project, index) => (
+                <motion.div
+                  key={project.id}
+                  className={`rounded-xl overflow-hidden shadow-lg ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} group`}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  whileHover={{ y: -10 }}
+                >
+                  <div className="relative overflow-hidden">
+                    <img 
+                      src={project.image} 
+                      alt={project.title}
+                      className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4">
+                      <a 
+                        href={project.githubUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="p-3 bg-white rounded-full text-gray-800 hover:bg-pink-500 hover:text-white transition-colors"
+                        aria-label="View code on GitHub"
+                      >
+                        <FaGithub size={20} />
+                      </a>
+                      {project.liveUrl !== "#" && (
+                        <a 
+                          href={project.liveUrl} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-3 bg-white rounded-full text-gray-800 hover:bg-pink-500 hover:text-white transition-colors"
+                          aria-label="View live demo"
+                        >
+                          <FaExternalLinkAlt size={18} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${darkMode ? 'bg-pink-900 text-pink-200' : 'bg-pink-200 text-pink-800'}`}>
+                        {project.category}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold mb-3">{project.title}</h3>
+                    <p className={`mb-4 ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>{project.description}</p>
+                    
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {project.technologies.map((tech, i) => (
+                        <span 
+                          key={i}
+                          className={`text-xs px-2 py-1 rounded ${darkMode ? 'bg-gray-600 text-gray-300' : 'bg-pink-100 text-pink-800'}`}
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <div className="flex justify-between items-center">
+                      <a 
+                        href={project.githubUrl} 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`flex items-center gap-2 ${darkMode ? 'text-pink-400 hover:text-pink-300' : 'text-pink-600 hover:text-pink-700'} font-medium`}
+                      >
+                        <FaGithub /> Kode Sumber
+                      </a>
+                      
+                      {project.liveUrl !== "#" && (
+                        <a 
+                          href={project.liveUrl} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex items-center gap-2 ${darkMode ? 'text-pink-400 hover:text-pink-300' : 'text-pink-600 hover:text-pink-700'} font-medium`}
+                        >
+                          Demo <FaExternalLinkAlt size={12} />
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            <motion.div 
+              className="text-center mt-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <a 
+                href="https://github.com/imeldaNovianti" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg ${darkMode ? 'bg-gray-700 hover:bg-gray-600 text-white' : 'bg-pink-100 hover:bg-pink-200 text-pink-800'} font-medium transition-colors`}
+              >
+                <FaGithub /> Lihat Lebih Banyak di GitHub
+              </a>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className={`py-20 ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} transition-colors duration-300`}>
+          <div className="max-w-6xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-16"
+            >
+              <h2 className={`text-4xl font-bold mb-4 ${darkMode ? 'text-white' : 'text-pink-800'} font-['Montserrat']`}>
+                <FaPaperPlane className="inline mr-3 text-pink-500" /> Hubungi Saya
+              </h2>
+              <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
+              <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
+                Tertarik untuk berkolaborasi atau memiliki pertanyaan? Jangan ragu untuk menghubungi saya
+              </p>
+            </motion.div>
+            
+            <div className="grid md:grid-cols-2 gap-12">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-2xl font-bold text-pink-500 mb-6 font-['Montserrat']">Informasi Kontak</h3>
+                
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
+                      <FaEnvelope className="text-pink-500 text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Email</h4>
+                      <a 
+                        href="mailto:noviantyimelda@gmail.com" 
+                        className={`${darkMode ? 'text-gray-300 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition-colors`}
+                      >
+                        noviantyimelda@gmail.com
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
+                      <FaWhatsapp className="text-pink-500 text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">WhatsApp</h4>
+                      <a 
+                        href="https://wa.me/6285223284793" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${darkMode ? 'text-gray-300 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition-colors`}
+                      >
+                        +62 852 2328 4793
+                      </a>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
+                      <FaMapMarkerAlt className="text-pink-500 text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">Lokasi</h4>
+                      <p className={darkMode ? "text-gray-300" : "text-pink-700"}>Bandung, Jawa Barat, Indonesia</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
+                      <FaLinkedin className="text-pink-500 text-xl" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">LinkedIn</h4>
+                      <a 
+                        href="https://www.linkedin.com/in/imelda-novianty-6b5606308/" 
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${darkMode ? 'text-gray-300 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'} transition-colors`}
+                      >
+                        Imelda Novianty
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-8">
+                  <h4 className="text-xl font-bold text-pink-500 mb-4 font-['Montserrat']">Media Sosial</h4>
+                  <div className="flex gap-4">
+                    {[
+                      { icon: <FaGithub />, href: "https://github.com/imeldaNovianti", label: "GitHub" },
+                      { icon: <FaLinkedin />, href: "https://www.linkedin.com/in/imelda-novianty-6b5606308/", label: "LinkedIn" },
+                      { icon: <FaInstagram />, href: "https://www.instagram.com/imelda_nvtyy/", label: "Instagram" },
+                      { icon: <FaWhatsapp />, href: "https://wa.me/6285223284793", label: "WhatsApp" },
+                    ].map((social, index) => (
+                      <motion.a
+                        key={index}
+                        href={social.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`p-3 ${darkMode ? 'bg-gray-800 text-gray-300 hover:bg-pink-600' : 'bg-pink-100 text-pink-700 hover:bg-pink-200'} rounded-full transition-colors`}
+                        whileHover={{ y: -5, scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        aria-label={social.label}
+                      >
+                        {social.icon}
+                      </motion.a>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+              >
+                <h3 className="text-2xl font-bold text-pink-500 mb-6 font-['Montserrat']">Kirim Pesan</h3>
+                
+                <form className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label htmlFor="name" className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>Nama Lengkap</label>
+                      <input 
+                        type="text" 
+                        id="name" 
+                        className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
+                        placeholder="Nama Anda"
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="email" className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>Alamat Email</label>
+                      <input 
+                        type="email" 
+                        id="email" 
+                        className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
+                        placeholder="email@contoh.com"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="subject" className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>Subjek</label>
+                    <input 
+                      type="text" 
+                      id="subject" 
+                      className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
+                      placeholder="Subjek pesan"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>Pesan</label>
+                    <textarea 
+                      id="message" 
+                      rows="5"
+                      className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
+                      placeholder="Tulis pesan Anda di sini..."
+                    ></textarea>
+                  </div>
+                  
+                  <motion.button
+                    type="submit"
+                    className="w-full py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-md flex items-center justify-center gap-2"
+                    whileHover={{ y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <FaPaperPlane /> Kirim Pesan
+                  </motion.button>
+                </form>
+              </motion.div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Footer */}
-      <footer className={`border-t py-8 text-center select-none transition-colors duration-300 ${darkMode ? 'bg-gray-900 border-gray-800 text-gray-400' : 'bg-gray-50 border-gray-200 text-gray-600'}`}>
-        <div className="max-w-6xl mx-auto px-6">
-          <p className="flex items-center justify-center gap-1">
-            © {new Date().getFullYear()} Imelda Novianty. Crafted with <FaHeart className="text-pink-500 mx-1" /> and React.
-          </p>
+      <footer className={`py-12 ${darkMode ? 'bg-gray-800' : 'bg-pink-100'} transition-colors duration-300`}>
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="mb-8"
+          >
+            <h3 className="text-2xl font-bold text-pink-500 mb-4 font-['Montserrat']">Imelda Novianty</h3>
+            <p className={`max-w-2xl mx-auto ${darkMode ? 'text-gray-400' : 'text-pink-700'} mb-6`}>
+              Fullstack Developer yang passionate dalam menciptakan solusi digital yang inovatif dan user-friendly.
+            </p>
+            
+            <div className="flex justify-center gap-6 mb-8">
+              {[
+                { icon: <FaGithub />, href: "https://github.com/imeldaNovianti", label: "GitHub" },
+                { icon: <FaLinkedin />, href: "https://www.linkedin.com/in/imelda-novianty-6b5606308/", label: "LinkedIn" },
+                { icon: <FaInstagram />, href: "https://www.instagram.com/imelda_nvtyy/", label: "Instagram" },
+                { icon: <FaEnvelope />, href: "mailto:noviantyimelda@gmail.com", label: "Email" },
+                { icon: <FaWhatsapp />, href: "https://wa.me/6285223284793", label: "WhatsApp" },
+              ].map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`p-3 ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-pink-600' : 'bg-pink-200 text-pink-700 hover:bg-pink-300'} rounded-full transition-colors`}
+                  whileHover={{ y: -5, scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  aria-label={social.label}
+                >
+                  {social.icon}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+          
+          <div className={`pt-8 border-t ${darkMode ? 'border-gray-700' : 'border-pink-200'}`}>
+            <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>
+              &copy; {new Date().getFullYear()} Imelda Novianty. Dibuat dengan <FaHeart className="inline text-pink-500" /> menggunakan React dan Tailwind CSS.
+            </p>
+          </div>
         </div>
       </footer>
     </div>
