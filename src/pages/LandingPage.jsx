@@ -273,21 +273,21 @@ function LandingPage() {
   ];
 
   const skillsData = [
-    { name: "Java", icon: FaJava, level: 85 },
-    { name: "JavaScript", icon: SiJavascript, level: 80 },
-    { name: "HTML", icon: FaHtml5, level: 90 },
-    { name: "CSS", icon: FaCss3Alt, level: 85 },
-    { name: "ReactJS", icon: FaReact, level: 75 },
-    { name: "Node.js", icon: FaNodeJs, level: 70 },
-    { name: "Spring Boot", icon: SiSpringboot, level: 75 },
-    { name: "SQL & Database", icon: FaDatabase, level: 80 },
-    { name: "PostgreSQL", icon: SiPostgresql, level: 75 },
-    { name: "Postman", icon: SiPostman, level: 85 },
-    { name: "DBeaver", icon: FaDatabase, level: 80 },
-    { name: "UI/UX Design", icon: FaPaintBrush, level: 70 },
-    { name: "Git", icon: FaGitAlt, level: 80 },
-    { name: "Tailwind CSS", icon: SiTailwindcss, level: 85 },
-    { name: "Bahasa C", icon: SiC, level: 75 },
+    { name: "Java", icon: FaJava, level: 100 },
+    { name: "JavaScript", icon: SiJavascript, level: 100 },
+    { name: "HTML", icon: FaHtml5, level: 100 },
+    { name: "CSS", icon: FaCss3Alt, level: 100 },
+    { name: "ReactJS", icon: FaReact, level: 100 },
+    { name: "Node.js", icon: FaNodeJs, level: 100 },
+    { name: "Spring Boot", icon: SiSpringboot, level: 100 },
+    { name: "SQL & Database", icon: FaDatabase, level: 100 },
+    { name: "PostgreSQL", icon: SiPostgresql, level: 100 },
+    { name: "Postman", icon: SiPostman, level: 100 },
+    { name: "DBeaver", icon: FaDatabase, level: 100 },
+    { name: "UI/UX Design", icon: FaPaintBrush, level: 100 },
+    { name: "Git", icon: FaGitAlt, level: 100 },
+    { name: "Tailwind CSS", icon: SiTailwindcss, level: 100 },
+    { name: "Bahasa C", icon: SiC, level: 100 },
   ];
 
   const projectsData = [
@@ -345,24 +345,16 @@ function LandingPage() {
 
   const educationData = [
     {
-      degree: "S1 Management Informatika",
+      degree: "D3 Management Informatika",
       institution: "Universitas Nasional Pasim",
-      period: "2019 - 2023",
+      period: "2023 - 2025",
       description: "Lulus dengan IPK 3.75. Fokus pada pengembangan perangkat lunak, basis data, dan manajemen proyek TI. Aktif dalam organisasi mahasiswa dan kegiatan kampus.",
       achievements: [
         "Lulus dengan predikat Cum Laude",
-        "Ketua Himpunan Mahasiswa Informatika (2021-2022)",
-        "Peserta aktif dalam berbagai kompetisi coding"
-      ]
-    },
-    {
-      degree: "SMA Negeri 4 Bandung",
-      institution: "SMA Negeri 4 Bandung",
-      period: "2016 - 2019",
-      description: "Jurusan IPA dengan fokus pada mata pelajaran matematika dan fisika. Aktif dalam ekstrakurikuler jurnalistik dan robotika.",
-      achievements: [
-        "Juara 2 Lomba Cerdas Cermat Tingkat Kota",
-        "Anggota tim robotika sekolah"
+        "Aktif organisasi himpunan Mahasiswa Informatika (2021-2022)",
+        "Peserta aktif dalam berbagai pelatihan coding dalam program beasiswa PUB",
+        "Magang selama 1 tahun di bagian marketing dan Front office",
+        "instruktur bahasa inggris"
       ]
     }
   ];
@@ -621,6 +613,7 @@ function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
+
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
                 className="flex justify-center"
@@ -698,7 +691,7 @@ function LandingPage() {
                       <span className="font-semibold">Minat:</span>
                     </div>
                     <p className={darkMode ? "text-gray-300" : "text-pink-700"}>
-                      Web Development, UI/UX Design, Manajemen Database
+                      Web Development, UI/UX Design, Manajemen Database,Frontend,Backend,Fullstack
                     </p>
                   </motion.div>
                 </div>
@@ -711,7 +704,7 @@ function LandingPage() {
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   Saya adalah lulusan Management Informatika dengan IPK 3.75 yang memiliki passion dalam pengembangan perangkat lunak. 
-                  Saya memiliki pengalaman dalam mengembangkan aplikasi web dan desktop menggunakan berbagai teknologi seperti Java, 
+                  Saya memiliki pengalaman dalam mengembangkan aplikasi web dan desktop menggunakan berbagai teknologi seperti Java, PHP,Bahasa C,C#,
                   JavaScript, ReactJS, dan Spring Boot. Saya senang menciptakan solusi yang inovatif dan efisien untuk masalah yang kompleks.
                 </motion.p>
                 
@@ -861,15 +854,15 @@ function LandingPage() {
                     </div>
                     <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
                       <p className="font-semibold">Manajemen Proyek</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Dasar</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Baik</p>
                     </div>
                     <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
                       <p className="font-semibold">Komunikasi</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Baik</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Ahli</p>
                     </div>
                     <div className={`p-3 rounded-lg ${darkMode ? 'bg-gray-600' : 'bg-white'} text-center shadow-sm`}>
                       <p className="font-semibold">Kerja Tim</p>
-                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Baik</p>
+                      <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>Ahli</p>
                     </div>
                   </div>
                 </motion.div>
