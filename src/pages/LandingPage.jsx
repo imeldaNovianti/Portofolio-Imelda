@@ -113,27 +113,40 @@ const StarsBackground = () => {
   );
 };
 
-// Komponen Teks Berjalan (Marquee)
-const ScrollingText = () => {
+// Komponen Teks Ketikan (Typing Effect)
+const TypingText = ({ text, darkMode, delay = 0 }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayedText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 40); // Kecepatan ketikan (ms per karakter)
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text]);
+
   return (
-    <div className="w-full bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-200 py-2 overflow-hidden">
-      <motion.div 
-        className="whitespace-nowrap flex"
-        animate={{ x: ['100%', '-100%'] }}
-        transition={{ 
-          x: {
-            repeat: Infinity,
-            repeatType: "loop",
-            duration: 20,
-            ease: "linear"
-          }
-        }}
-      >
-        <span className="mx-4">✨ Selamat Datang di Portfolio Imelda Novianty ✨</span>
-        <span className="mx-4">✨ Fullstack Developer & UI/UX Designer ✨</span>
-        <span className="mx-4">✨ Terbuka untuk Peluang Kerja dan Kolaborasi ✨</span>
-      </motion.div>
-    </div>
+    <motion.p 
+      className={`text-xl md:text-2xl mb-10 max-w-3xl mx-auto ${darkMode ? "text-gray-300" : "text-pink-800"} font-medium`}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: delay + 0.4, duration: 0.8 }}
+    >
+      {displayedText}
+      {currentIndex < text.length && (
+        <motion.span
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ repeat: Infinity, duration: 0.8 }}
+          className="ml-1"
+        >
+          |
+        </motion.span>
+      )}
+    </motion.p>
   );
 };
 
@@ -230,6 +243,12 @@ function LandingPage() {
     return true;
   });
   const [activeSection, setActiveSection] = useState("home");
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth";
@@ -263,6 +282,27 @@ function LandingPage() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleFormChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Di sini Anda bisa menambahkan logika untuk mengirim form
+    // Misalnya menggunakan EmailJS, Formspree, atau backend sendiri
+    alert('Pesan telah dikirim! Terima kasih telah menghubungi saya.');
+    setFormData({
+      name: '',
+      email: '',
+      subject: '',
+      message: ''
+    });
+  };
 
   const navLinks = [
     { href: "#about", label: "Tentang", icon: <FaUser className="inline mr-2" /> },
@@ -348,43 +388,69 @@ function LandingPage() {
       degree: "D3 Management Informatika",
       institution: "Universitas Nasional Pasim",
       period: "2023 - 2025",
-      description: "Lulus dengan IPK 3.75. Fokus pada pengembangan perangkat lunak, basis data, dan manajemen proyek TI. Aktif dalam organisasi mahasiswa dan kegiatan kampus.",
+      description: "Fokus pada pengembangan perangkat lunak, basis data, dan manajemen proyek TI. Aktif dalam organisasi mahasiswa dan kegiatan kampus.",
       achievements: [
-        "Lulus dengan predikat Cum Laude",
         "Aktif organisasi himpunan Mahasiswa Informatika (2021-2022)",
         "Peserta aktif dalam berbagai pelatihan coding dalam program beasiswa PUB",
         "Magang selama 1 tahun di bagian marketing dan Front office",
+        "Berperan sebagai tim pendukung dalam proses akreditasi kampus",
         "instruktur bahasa inggris"
       ]
     }
   ];
 
   const certificationsData = [
-    {
-      title: "Belajar Dasar Pemrograman JavaScript",
-      issuer: "Dicoding Indonesia",
-      date: "Juni 2023",
-      credentialLink: "#"
-    },
-    {
-      title: "Belajar Membuat Aplikasi Back-End untuk Pemula",
-      issuer: "Dicoding Indonesia",
-      date: "Agustus 2023",
-      credentialLink: "#"
-    },
-    {
-      title: "Java Programming Masterclass",
-      issuer: "Udemy",
-      date: "November 2022",
-      credentialLink: "#"
-    },
-    {
-      title: "React JS Frontend Web Development For Beginners",
-      issuer: "Udemy",
-      date: "Januari 2023",
-      credentialLink: "#"
-    }
+{
+  title: "Belajar Dasar Pemrograman JavaScript",
+  issuer: "Program BEASISWA PUB",
+  date: "Juni 2023",
+  credentialLink: "#"
+},
+{
+  title: "Belajar Membuat Aplikasi Back-End untuk Pemula",
+  issuer: "Program BEASISWA PUB",
+  date: "Agustus 2023",
+  credentialLink: "#"
+},
+{
+  title: "Java Programming Masterclass",
+  issuer: "Program BEASISWA PUB",
+  date: "November 2022",
+  credentialLink: "#"
+},
+{
+  title: "React JS Frontend Web Development For Beginners",
+  issuer: "Program BEASISWA PUB",
+  date: "Januari 2023",
+  credentialLink: "#"
+},
+{
+  title: "Pelatihan Pemrograman Bahasa C",
+  issuer: "Program BEASISWA PUB",
+  date: "Maret 2023",
+  credentialLink: "#"
+},
+{
+  title: "React JS Advanced Development",
+  issuer: "Program BEASISWA PUB",
+  date: "April 2023",
+  credentialLink: "#"
+},
+{
+  title: "Node.js Backend Development",
+  issuer: "Program BEASISWA PUB",
+  date: "Mei 2023",
+  credentialLink: "#"
+},
+{
+  title: "Java Spring Boot Development",
+  issuer: "Program BEASISWA PUB",
+  date: "Juli 2023",
+  credentialLink: "#"
+}
   ];
+
+  const introText = "Lulusan Baru Management Informatika yang bersemangat dalam menciptakan aplikasi yang indah dan fungsional. Terampil dalam pengembangan frontend dan backend dengan dasar yang kuat dalam Java, JavaScript, dan teknologi web modern.";
 
   return (
     <div className={`min-h-screen ${darkMode ? 'bg-gray-900 text-gray-100' : 'bg-gradient-to-br from-pink-50 via-pink-50 to-pink-100 text-gray-800'} font-['Poppins'] selection:bg-pink-500 selection:text-white overflow-x-hidden transition-colors duration-300`}>
@@ -393,11 +459,8 @@ function LandingPage() {
       <StarsBackground />
       <CustomCursor />
       
-      {/* Header dengan Teks Berjalan */}
-      <ScrollingText />
-      
       {/* Header */}
-      <header className={`fixed top-8 w-full ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} bg-opacity-90 backdrop-blur-md z-50 shadow-lg border-b ${darkMode ? 'border-gray-800' : 'border-pink-200'} transition-colors duration-300`}>
+      <header className={`fixed top-0 w-full ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} bg-opacity-90 backdrop-blur-md z-50 shadow-lg border-b ${darkMode ? 'border-gray-800' : 'border-pink-200'} transition-colors duration-300`}>
         <nav className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <motion.div 
             className="flex items-center gap-2 text-pink-500 select-none"
@@ -522,35 +585,25 @@ function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <motion.h1 
-              className="text-5xl md:text-7xl font-bold mb-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
-            >
-              Hai, Saya <span className="text-pink-500">Imelda Novianty</span>
-              <br />
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600"
-              >
-                Fullstack Developer
-              </motion.span>
-            </motion.h1>
+<motion.h1 
+  className="text-5xl md:text-7xl font-bold mb-6"
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.2, duration: 0.8 }}
+>
+  Hai, Saya <span className="text-pink-500">Imelda Novianty</span>
+  <br />
+  <motion.span
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ delay: 0.5, duration: 0.8 }}
+    className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 text-xl md:text-2xl font-medium"
+  >
+    Junior Full Stack Web Developer | React.js, Java, & PostgreSQL Enthusiast | Problem Solver & Lifelong Learner
+  </motion.span>
+</motion.h1>
             
-            <motion.p 
-              className="text-xl md:text-2xl mb-10 max-w-3xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8 }}
-            >
-              <span className={`${darkMode ? "text-gray-300" : "text-pink-800"} font-medium`}>
-                Lulusan Baru Management Informatika yang bersemangat dalam menciptakan aplikasi yang indah dan fungsional. 
-                Terampil dalam pengembangan frontend dan backend dengan dasar yang kuat dalam Java, JavaScript, dan teknologi web modern.
-              </span>
-            </motion.p>
+            <TypingText text={introText} darkMode={darkMode} delay={0.4} />
             
             <motion.div 
               className="flex flex-col sm:flex-row gap-4 justify-center"
@@ -565,15 +618,6 @@ function LandingPage() {
                 whileTap={{ scale: 0.95 }}
               >
                 <FaLaptopCode /> Lihat Proyek Saya
-              </motion.a>
-              <motion.a
-                href="/resume.pdf"
-                download
-                className={`px-8 py-4 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-white hover:bg-pink-100 text-pink-800'} rounded-lg font-medium transition-colors border ${darkMode ? 'border-gray-700' : 'border-pink-300'} flex items-center justify-center gap-2`}
-                whileHover={{ y: -5, scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <FaDownload /> Unduh CV
               </motion.a>
             </motion.div>
             
@@ -613,7 +657,6 @@ function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
-
                 viewport={{ once: true, margin: "-100px" }}
                 transition={{ duration: 0.8 }}
                 className="flex justify-center"
@@ -625,7 +668,7 @@ function LandingPage() {
                     transition={{ type: "spring", stiffness: 300 }}
                   ></motion.div>
                   <img
-                    src="/src/assets/me.jpg"
+                    src="/src/assets/mee.png"
                     alt="Imelda Novianty"
                     className="relative z-10 rounded-xl shadow-2xl transform -rotate-3 w-72 h-72 object-cover"
                     onError={(e) => {
@@ -666,7 +709,7 @@ function LandingPage() {
                       <FaLaptopCode className="text-pink-500" />
                       <span className="font-semibold">Peran:</span>
                     </div>
-                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>Fullstack Developer</p>
+                    <p className={darkMode ? "text-gray-300" : "text-pink-700"}>junior pragrammer</p>
                   </motion.div>
                   
                   <motion.div 
@@ -703,9 +746,9 @@ function LandingPage() {
                   viewport={{ once: true, margin: "-100px" }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  Saya adalah lulusan Management Informatika dengan IPK 3.75 yang memiliki passion dalam pengembangan perangkat lunak. 
-                  Saya memiliki pengalaman dalam mengembangkan aplikasi web dan desktop menggunakan berbagai teknologi seperti Java, PHP,Bahasa C,C#,
-                  JavaScript, ReactJS, dan Spring Boot. Saya senang menciptakan solusi yang inovatif dan efisien untuk masalah yang kompleks.
+                  Saya adalah lulusan Management Informatika yang memiliki passion dalam pengembangan perangkat lunak. 
+                  Saya memiliki pengalaman dalam mengembangkan aplikasi web dan desktop menggunakan berbagai teknologi seperti Java, PHP,Bahasa C,C++,C#,
+                  JavaScript, ReactJS,NodeJS dan Spring Boot. Saya senang menciptakan solusi yang inovatif dan efisien untuk masalah yang kompleks.
                 </motion.p>
                 
                 <motion.div 
@@ -886,7 +929,7 @@ function LandingPage() {
               </h2>
               <div className="w-20 h-1 bg-pink-500 mx-auto mb-6"></div>
               <p className={`${darkMode ? 'text-gray-400' : 'text-pink-700'} max-w-2xl mx-auto text-lg`}>
-                Teknologi dan tools yang saya kuasai untuk pengembangan perangkat lunak
+                Teknologi и tools yang saya kuasai untuk pengembangan perangkat lunak
               </p>
             </motion.div>
             
@@ -1209,15 +1252,18 @@ function LandingPage() {
               >
                 <h3 className="text-2xl font-bold text-pink-500 mb-6 font-['Montserrat']">Kirim Pesan</h3>
                 
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={handleFormSubmit}>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
                       <label htmlFor="name" className={`block mb-2 font-medium ${darkMode ? 'text-gray-300' : 'text-pink-700'}`}>Nama Lengkap</label>
                       <input 
                         type="text" 
                         id="name" 
+                        value={formData.name}
+                        onChange={handleFormChange}
                         className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
                         placeholder="Nama Anda"
+                        required
                       />
                     </div>
                     <div>
@@ -1225,8 +1271,11 @@ function LandingPage() {
                       <input 
                         type="email" 
                         id="email" 
+                        value={formData.email}
+                        onChange={handleFormChange}
                         className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
                         placeholder="email@contoh.com"
+                        required
                       />
                     </div>
                   </div>
@@ -1236,8 +1285,11 @@ function LandingPage() {
                     <input 
                       type="text" 
                       id="subject" 
+                      value={formData.subject}
+                      onChange={handleFormChange}
                       className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
                       placeholder="Subjek pesan"
+                      required
                     />
                   </div>
                   
@@ -1246,8 +1298,11 @@ function LandingPage() {
                     <textarea 
                       id="message" 
                       rows="5"
+                      value={formData.message}
+                      onChange={handleFormChange}
                       className={`w-full px-4 py-3 rounded-lg ${darkMode ? 'bg-gray-800 text-white border-gray-700' : 'bg-white text-pink-800 border-pink-200'} border focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-colors`}
                       placeholder="Tulis pesan Anda di sini..."
+                      required
                     ></textarea>
                   </div>
                   
