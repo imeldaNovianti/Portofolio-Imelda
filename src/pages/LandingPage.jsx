@@ -672,7 +672,7 @@ function LandingPage() {
                     alt="Imelda Novianty"
                     className="relative z-10 rounded-xl shadow-2xl transform -rotate-3 w-72 h-72 object-cover"
                     onError={(e) => {
-                      e.target.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=688&q=80";
+                      e.target.src = "";
                     }}
                   />
                 </div>
