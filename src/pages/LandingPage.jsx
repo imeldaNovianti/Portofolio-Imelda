@@ -668,7 +668,7 @@ function LandingPage() {
                     transition={{ type: "spring", stiffness: 300 }}
                   ></motion.div>
                   <img
-                    src="/public/mee.png"
+                    src="/mee.png"
                     alt="Imelda Novianty"
                     className="relative z-10 rounded-xl shadow-2xl transform -rotate-3 w-72 h-72 object-cover"
                     onError={(e) => {
