@@ -599,7 +599,7 @@ function LandingPage() {
     transition={{ delay: 0.5, duration: 0.8 }}
     className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 text-xl md:text-2xl font-medium"
   >
-    Junior Full Stack Web Developer | React.js, Java, & PostgreSQL Enthusiast | Problem Solver & Lifelong Learner
+    Junior Full Stack Web Developer | React.js,Next.Js, Java, & Basis Data | Problem Solver & Lifelong Learner
   </motion.span>
 </motion.h1>
             
@@ -668,7 +668,7 @@ function LandingPage() {
                     transition={{ type: "spring", stiffness: 300 }}
                   ></motion.div>
                   <img
-                    src="/src/assets/mee.png"
+                    src="/public/mee.png"
                     alt="Imelda Novianty"
                     className="relative z-10 rounded-xl shadow-2xl transform -rotate-3 w-72 h-72 object-cover"
                     onError={(e) => {
