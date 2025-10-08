@@ -6,7 +6,8 @@ import {
   FaPaintBrush, FaCode, FaServer, FaMobileAlt, FaInstagram,
   FaWhatsapp, FaPaperPlane, FaHeart, FaUser, FaGraduationCap,
   FaLaptopCode, FaJava, FaCss3Alt, FaHtml5, FaGitAlt,
-  FaMapMarkerAlt, FaDownload, FaAward, FaCertificate
+  FaMapMarkerAlt, FaDownload, FaAward, FaCertificate,
+  FaTimes as FaClose
 } from "react-icons/fa";
 import { SiJavascript, SiSpringboot, SiPostgresql, SiPostman, SiC, SiTailwindcss } from "react-icons/si";
 import { motion, AnimatePresence } from "framer-motion";
@@ -233,6 +234,84 @@ const CustomCursor = () => {
   );
 };
 
+// Komponen Modal untuk Sertifikat
+const CertificateModal = ({ isOpen, onClose, certificate }) => {
+  if (!isOpen || !certificate) return null;
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={onClose}
+        >
+          <motion.div
+            className="bg-white dark:bg-gray-800 rounded-xl max-w-4xl max-h-[90vh] w-full overflow-hidden"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center p-4 border-b dark:border-gray-700">
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                {certificate.title}
+              </h3>
+              <button
+                onClick={onClose}
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+              >
+                <FaClose className="text-gray-600 dark:text-gray-400 text-xl" />
+              </button>
+            </div>
+            
+            <div className="p-6 max-h-[70vh] overflow-y-auto">
+              <div className="flex flex-col items-center">
+                <img
+                  src={certificate.image}
+                  alt={certificate.title}
+                  className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-lg"
+                  onError={(e) => {
+                    e.target.src = "https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80";
+                  }}
+                />
+                
+                <div className="mt-6 text-center">
+                  <p className="text-gray-600 dark:text-gray-400 mb-2">
+                    <strong>Diterbitkan oleh:</strong> {certificate.issuer}
+                  </p>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    <strong>Tanggal:</strong> {certificate.date}
+                  </p>
+                  
+                  <div className="flex gap-4 justify-center">
+                    <a
+                      href={certificate.image}
+                      download
+                      className="flex items-center gap-2 px-4 py-2 bg-pink-500 hover:bg-pink-600 text-white rounded-lg transition-colors"
+                    >
+                      <FaDownload /> Unduh Sertifikat
+                    </a>
+                    
+                    <button
+                      onClick={onClose}
+                      className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition-colors"
+                    >
+                      Tutup
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+};
+
 function LandingPage() {
   const [navOpen, setNavOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
@@ -248,6 +327,10 @@ function LandingPage() {
     email: '',
     subject: '',
     message: ''
+  });
+  const [certificateModal, setCertificateModal] = useState({
+    isOpen: false,
+    certificate: null
   });
 
   useEffect(() => {
@@ -283,6 +366,27 @@ function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fix untuk smooth scroll di mobile
+  const handleNavClick = (href) => {
+    setNavOpen(false);
+    
+    if (href.startsWith('#')) {
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // Delay sedikit untuk memastikan nav tertutup dulu
+        setTimeout(() => {
+          const offsetTop = targetElement.offsetTop - 100;
+          window.scrollTo({
+            top: offsetTop,
+            behavior: 'smooth'
+          });
+        }, 100);
+      }
+    }
+  };
+
   const handleFormChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({
@@ -293,14 +397,40 @@ function LandingPage() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Di sini Anda bisa menambahkan logika untuk mengirim form
-    // Misalnya menggunakan EmailJS, Formspree, atau backend sendiri
-    alert('Pesan telah dikirim! Terima kasih telah menghubungi saya.');
+    
+    // Validasi form
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      alert('Harap lengkapi semua field!');
+      return;
+    }
+    
+    // Simulasi pengiriman form
+    const mailtoLink = `mailto:noviantyimelda@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(`Nama: ${formData.name}\nEmail: ${formData.email}\n\nPesan:\n${formData.message}`)}`;
+    
+    window.location.href = mailtoLink;
+    
+    // Reset form
     setFormData({
       name: '',
       email: '',
       subject: '',
       message: ''
+    });
+    
+    alert('Pesan telah dikirim! Terima kasih telah menghubungi saya.');
+  };
+
+  const openCertificateModal = (certificate) => {
+    setCertificateModal({
+      isOpen: true,
+      certificate
+    });
+  };
+
+  const closeCertificateModal = () => {
+    setCertificateModal({
+      isOpen: false,
+      certificate: null
     });
   };
 
@@ -400,54 +530,62 @@ function LandingPage() {
   ];
 
   const certificationsData = [
-{
-  title: "Belajar Dasar Pemrograman JavaScript",
-  issuer: "Program BEASISWA PUB",
-  date: "Juni 2023",
-  credentialLink: "#"
-},
-{
-  title: "Belajar Membuat Aplikasi Back-End untuk Pemula",
-  issuer: "Program BEASISWA PUB",
-  date: "Agustus 2023",
-  credentialLink: "#"
-},
-{
-  title: "Java Programming Masterclass",
-  issuer: "Program BEASISWA PUB",
-  date: "November 2022",
-  credentialLink: "#"
-},
-{
-  title: "React JS Frontend Web Development For Beginners",
-  issuer: "Program BEASISWA PUB",
-  date: "Januari 2023",
-  credentialLink: "#"
-},
-{
-  title: "Pelatihan Pemrograman Bahasa C",
-  issuer: "Program BEASISWA PUB",
-  date: "Maret 2023",
-  credentialLink: "#"
-},
-{
-  title: "React JS Advanced Development",
-  issuer: "Program BEASISWA PUB",
-  date: "April 2023",
-  credentialLink: "#"
-},
-{
-  title: "Node.js Backend Development",
-  issuer: "Program BEASISWA PUB",
-  date: "Mei 2023",
-  credentialLink: "#"
-},
-{
-  title: "Java Spring Boot Development",
-  issuer: "Program BEASISWA PUB",
-  date: "Juli 2023",
-  credentialLink: "#"
-}
+    {
+      title: "Belajar Dasar Pemrograman JavaScript",
+      issuer: "Program BEASISWA PUB",
+      date: "Juni 2023",
+      credentialLink: "#",
+      image: "/certificates/javascript-basic.jpg" // Ganti dengan path gambar sertifikat Anda
+    },
+    {
+      title: "Belajar Membuat Aplikasi Back-End untuk Pemula",
+      issuer: "Program BEASISWA PUB",
+      date: "Agustus 2023",
+      credentialLink: "#",
+      image: "/certificates/backend-basic.jpg"
+    },
+    {
+      title: "Java Programming Masterclass",
+      issuer: "Program BEASISWA PUB",
+      date: "November 2022",
+      credentialLink: "#",
+      image: "/certificates/java-masterclass.jpg"
+    },
+    {
+      title: "React JS Frontend Web Development For Beginners",
+      issuer: "Program BEASISWA PUB",
+      date: "Januari 2023",
+      credentialLink: "#",
+      image: "/certificates/react-beginner.jpg"
+    },
+    {
+      title: "Pelatihan Pemrograman Bahasa C",
+      issuer: "Program BEASISWA PUB",
+      date: "Maret 2023",
+      credentialLink: "#",
+      image: "/certificates/c-programming.jpg"
+    },
+    {
+      title: "React JS Advanced Development",
+      issuer: "Program BEASISWA PUB",
+      date: "April 2023",
+      credentialLink: "#",
+      image: "/certificates/react-advanced.jpg"
+    },
+    {
+      title: "Node.js Backend Development",
+      issuer: "Program BEASISWA PUB",
+      date: "Mei 2023",
+      credentialLink: "#",
+      image: "/certificates/nodejs.jpg"
+    },
+    {
+      title: "Java Spring Boot Development",
+      issuer: "Program BEASISWA PUB",
+      date: "Juli 2023",
+      credentialLink: "#",
+      image: "/certificates/spring-boot.jpg"
+    }
   ];
 
   const introText = "Lulusan Baru Management Informatika yang bersemangat dalam menciptakan aplikasi yang indah dan fungsional. Terampil dalam pengembangan frontend dan backend dengan dasar yang kuat dalam Java, JavaScript, dan teknologi web modern.";
@@ -458,6 +596,13 @@ function LandingPage() {
       <FloatingSocials />
       <StarsBackground />
       <CustomCursor />
+      
+      {/* Certificate Modal */}
+      <CertificateModal 
+        isOpen={certificateModal.isOpen}
+        onClose={closeCertificateModal}
+        certificate={certificateModal.certificate}
+      />
       
       {/* Header */}
       <header className={`fixed top-0 w-full ${darkMode ? 'bg-gray-900' : 'bg-pink-50'} bg-opacity-90 backdrop-blur-md z-50 shadow-lg border-b ${darkMode ? 'border-gray-800' : 'border-pink-200'} transition-colors duration-300`}>
@@ -488,7 +633,10 @@ function LandingPage() {
                       ? "text-pink-500 font-bold border-b-2 border-pink-500" 
                       : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'}`
                   }`}
-                  onClick={() => setNavOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(href);
+                  }}
                 >
                   {icon} {label}
                 </a>
@@ -545,7 +693,10 @@ function LandingPage() {
                         ? "text-pink-500 font-bold" 
                         : `${darkMode ? 'text-gray-400 hover:text-pink-400' : 'text-pink-700 hover:text-pink-500'}`
                     }`}
-                    onClick={() => setNavOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(href);
+                    }}
                   >
                     {icon} {label}
                   </a>
@@ -585,23 +736,23 @@ function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-<motion.h1 
-  className="text-5xl md:text-7xl font-bold mb-6"
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.2, duration: 0.8 }}
->
-  Hai, Saya <span className="text-pink-500">Imelda Novianty</span>
-  <br />
-  <motion.span
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ delay: 0.5, duration: 0.8 }}
-    className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 text-xl md:text-2xl font-medium"
-  >
-    Junior Full Stack Web Developer | React.js,Next.Js, Java, & Basis Data | Problem Solver & Lifelong Learner
-  </motion.span>
-</motion.h1>
+            <motion.h1 
+              className="text-5xl md:text-7xl font-bold mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+            >
+              Hai, Saya <span className="text-pink-500">Imelda Novianty</span>
+              <br />
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-purple-600 text-xl md:text-2xl font-medium"
+              >
+                Junior Full Stack Web Developer | React.js,Next.Js, Java, & Basis Data | Problem Solver & Lifelong Learner
+              </motion.span>
+            </motion.h1>
             
             <TypingText text={introText} darkMode={darkMode} delay={0.4} />
             
@@ -616,6 +767,10 @@ function LandingPage() {
                 className="px-8 py-4 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-lg flex items-center justify-center gap-2"
                 whileHover={{ y: -5, scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick("#projects");
+                }}
               >
                 <FaLaptopCode /> Lihat Proyek Saya
               </motion.a>
@@ -627,7 +782,14 @@ function LandingPage() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.5, duration: 1 }}
             >
-              <a href="#about" className={`${darkMode ? 'text-gray-600 hover:text-pink-500' : 'text-pink-400 hover:text-pink-500'} transition-colors animate-bounce`}>
+              <a 
+                href="#about" 
+                className={`${darkMode ? 'text-gray-600 hover:text-pink-500' : 'text-pink-400 hover:text-pink-500'} transition-colors animate-bounce`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavClick("#about");
+                }}
+              >
                 <FaChevronDown size={24} />
               </a>
             </motion.div>
@@ -672,7 +834,7 @@ function LandingPage() {
                     alt="Imelda Novianty"
                     className="relative z-10 rounded-xl shadow-2xl transform -rotate-3 w-72 h-72 object-cover"
                     onError={(e) => {
-                      e.target.src = "";
+                      e.target.src = "https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80";
                     }}
                   />
                 </div>
@@ -761,12 +923,20 @@ function LandingPage() {
                   <a
                     href="#contact"
                     className="px-6 py-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg font-medium transition-colors shadow-md"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick("#contact");
+                    }}
                   >
                     Hubungi Saya
                   </a>
                   <a
                     href="#projects"
                     className={`px-6 py-3 ${darkMode ? 'bg-gray-800 hover:bg-gray-700 text-white' : 'bg-white hover:bg-pink-100 text-pink-800'} rounded-lg font-medium transition-colors border ${darkMode ? 'border-gray-700' : 'border-pink-300'} shadow-md`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick("#projects");
+                    }}
                   >
                     Lihat Proyek
                   </a>
@@ -855,12 +1025,13 @@ function LandingPage() {
                   {certificationsData.map((cert, index) => (
                     <motion.div 
                       key={index}
-                      className={`p-6 rounded-xl ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} shadow-md flex items-start gap-4`}
+                      className={`p-6 rounded-xl ${darkMode ? 'bg-gray-700' : 'bg-pink-50'} shadow-md flex items-start gap-4 cursor-pointer`}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-100px" }}
                       transition={{ duration: 0.8, delay: index * 0.1 }}
                       whileHover={{ y: -5 }}
+                      onClick={() => openCertificateModal(cert)}
                     >
                       <div className="p-3 bg-pink-100 dark:bg-pink-900 rounded-full">
                         <FaCertificate className="text-pink-500 text-xl" />
@@ -869,14 +1040,11 @@ function LandingPage() {
                         <h4 className="text-lg font-bold mb-1">{cert.title}</h4>
                         <p className={`mb-1 ${darkMode ? 'text-gray-400' : 'text-pink-700'}`}>{cert.issuer}</p>
                         <p className={`mb-2 ${darkMode ? 'text-gray-500' : 'text-pink-600'} text-sm`}>{cert.date}</p>
-                        <a 
-                          href={cert.credentialLink} 
+                        <button 
                           className="text-pink-500 hover:text-pink-600 text-sm font-medium flex items-center gap-1"
-                          target="_blank"
-                          rel="noopener noreferrer"
                         >
                           Lihat Sertifikat <FaExternalLinkAlt className="text-xs" />
-                        </a>
+                        </button>
                       </div>
                     </motion.div>
                   ))}
