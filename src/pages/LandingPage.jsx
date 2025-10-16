@@ -7,9 +7,13 @@ import {
   FaWhatsapp, FaPaperPlane, FaHeart, FaUser, FaGraduationCap,
   FaLaptopCode, FaJava, FaCss3Alt, FaHtml5, FaGitAlt,
   FaMapMarkerAlt, FaDownload, FaAward, FaCertificate,
-  FaTimes as FaClose
+  FaTimes as FaClose, FaMicrosoft
 } from "react-icons/fa";
-import { SiJavascript, SiSpringboot, SiPostgresql, SiPostman, SiC, SiTailwindcss } from "react-icons/si";
+import { 
+  SiJavascript, SiSpringboot, SiPostgresql, SiPostman, SiC, 
+  SiTailwindcss
+} from "react-icons/si";
+
 import { motion, AnimatePresence } from "framer-motion";
 
 // Komponen-komponen khusus
@@ -364,8 +368,10 @@ function LandingPage() {
     { href: "#contact", label: "Kontak", icon: <FaPaperPlane className="inline mr-2" /> },
   ];
 
-  const skillsData = [
+const skillsData = [
     { name: "Java", icon: FaJava, level: 100 },
+    { name: "C#", icon: FaMicrosoft, level: 100 }, // Gunakan FaMicrosoft untuk C#
+    { name: ".NET", icon: FaMicrosoft, level: 100 },
     { name: "JavaScript", icon: SiJavascript, level: 100 },
     { name: "HTML", icon: FaHtml5, level: 100 },
     { name: "CSS", icon: FaCss3Alt, level: 100 },
@@ -381,8 +387,7 @@ function LandingPage() {
     { name: "Tailwind CSS", icon: SiTailwindcss, level: 100 },
     { name: "Bahasa C", icon: SiC, level: 100 },
   ];
-
-  const projectsData = [
+   const projectsData = [
     {
       id: 1,
       title: "Aplikasi Manajemen Tugas",
@@ -435,21 +440,25 @@ function LandingPage() {
     }
   ];
 
-  const educationData = [
-    {
-      degree: "D3 Management Informatika",
-      institution: "Universitas Nasional Pasim",
-      period: "2023 - 2025",
-      description: "Fokus pada pengembangan perangkat lunak, basis data, dan manajemen proyek TI. Aktif dalam organisasi mahasiswa dan kegiatan kampus.",
-      achievements: [
-        "Aktif organisasi himpunan Mahasiswa Informatika (2021-2022)",
-        "Peserta aktif dalam berbagai pelatihan coding dalam program beasiswa PUB",
-        "Magang selama 1 tahun di bagian marketing dan Front office",
-        "Berperan sebagai tim pendukung dalam proses akreditasi kampus",
-        "instruktur bahasa inggris"
-      ]
-    }
-  ];
+  
+const educationData = [
+  {
+    degree: "D3 Manajemen Informatika",
+    institution: "Universitas Nasional Pasim Bandung",
+    period: "2023 - 2025",
+    description:
+      "Saya adalah mahasiswi aktif Universitas Nasional Pasim Bandung sekaligus penerima beasiswa Program Pemberdayaan Umat Berkelanjutan (PUB). Melalui program ini, saya mendapatkan pelatihan intensif dan terstruktur mulai dari dasar logika dan algoritma, struktur data, hingga pemrograman lanjutan menggunakan Java Spring Boot dan React.js. Selama pelatihan, saya juga mendalami konsep basis data (MySQL dan PostgreSQL), pengembangan RESTful API, fundamental front-end dengan HTML, CSS, JavaScript, hingga styling menggunakan Tailwind CSS. Beasiswa PUB tidak hanya memperkuat kemampuan teknis saya, tetapi juga membentuk etos kerja profesional, kedisiplinan, dan kemampuan berpikir kritis yang siap diterapkan di dunia kerja. Saya juga berpengalaman sebagai mentor pelatihan Java Spring Boot & React.js Fundamental, serta menjadi bagian dari tim akreditasi dan marketing di Universitas Nasional Pasim Bandung.",
+    achievements: [
+      "Penerima Beasiswa Program Pemberdayaan Umat Berkelanjutan (PUB)",
+      "Mentor pelatihan Java Spring Boot & React.js Fundamental",
+      "Aktif dalam organisasi Himpunan Mahasiswa Informatika (2021-2022)",
+      "Magang di Divisi Marketing dan PMB Universitas Nasional Pasim",
+      "Anggota Tim Akreditasi Fakultas – Universitas Nasional Pasim",
+      "Instruktur bahasa Inggris dan pendamping pelatihan struktur data menggunakan bahasa C",
+      "Berpartisipasi dalam berbagai proyek seperti HI Florist!, GOODTEACHER, dan Apply Job"
+    ]
+  }
+];
 
   const certificationsData = [
     {
