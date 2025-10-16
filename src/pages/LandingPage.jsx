@@ -456,28 +456,28 @@ function LandingPage() {
       title: "Belajar fundamental frontend React programming language",
       issuer: "Program BEASISWA PUB",
       credentialLink: "#",
-      image: "/public/react only.jpg"
+      image: "/react only.jpg"
     },
     {
       title: "Java Programming Masterclass",
       issuer: "Program BEASISWA PUB",
       date: "September 2025",
       credentialLink: "#",
-      image: "/public/sertifikat react java.jpg"
+      image: "/sertifikat react java.jpg"
     },
     {
       title: "Struktur Data",
       issuer: "Program BEASISWA PUB",
       date: "Juni 2024",
       credentialLink: "#",
-      image: "/public/sertifikat struktur data.jpg"
+      image: "/sertifikat struktur data.jpg"
     },
         {
       title: "DataBase",
       issuer: "Program BEASISWA PUB",
       date: "Juni 2024",
       credentialLink: "#",
-      image: "/public/database.jpg"
+      image: "/database.jpg"
     },
 
     {
@@ -485,42 +485,42 @@ function LandingPage() {
       issuer: "Program BEASISWA PUB",
       date: "Desember 2023",
       credentialLink: "#",
-      image: "/public/c language training.jpg"
+      image: "/c language training.jpg"
     },
     {
       title: "React JS Advanced Development",
       issuer: "Program BEASISWA PUB",
       date: "mei 2024",
       credentialLink: "#",
-      image: "/public/sertifikat fundamental frontend.jpg"
+      image: "/sertifikat fundamental frontend.jpg"
     },
     {
       title: "Node.js Backend Development",
       issuer: "Program BEASISWA PUB",
       date: "Mei 2023",
       credentialLink: "#",
-      image: "/public/sertifikat fundamental frontend.jpg"
+      image: "/sertifikat fundamental frontend.jpg"
     },
     {
       title: "Java Spring Boot Development",
       issuer: "Program BEASISWA PUB",
       date: "september 2025",
       credentialLink: "#",
-      image: "/public/sertifikat react java.jpg"
+      image: "/sertifikat react java.jpg"
     },
         {
       title: "HTML,CSS,JavaSCript",
       issuer: "Program BEASISWA PUB",
       date: "Mei 2024",
       credentialLink: "#",
-      image: "/public/html.css.js.jpg"
+      image: "/html.css.js.jpg"
     },
             {
       title: "Git & Github",
       issuer: "Program BEASISWA PUB",
       date: "desember 2023",
       credentialLink: "#",
-      image: "/public/github.jpg"
+      image: "/github.jpg"
     }
 
 
